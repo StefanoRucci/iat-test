@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <title>IAT Test</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <div id="app">
+
+    <!-- Schermata iniziale -->
+    <div id="start-screen" class="screen">
+      <h1>IAT Test</h1>
+      <p>Inserisci le <strong>ultime 3 cifre</strong> del tuo numero di cellulare per iniziare.</p>
+
+      <input type="text" id="phone-last3" maxlength="3" placeholder="000">
+
+      <button id="start-button">Inizia</button>
+      <p id="start-error" class="error"></p>
+    </div>
+
+    <!-- Schermata istruzioni -->
+    <div id="instruction-screen" class="screen hidden">
+      <div id="instruction-text"></div>
+      <p id="instruction-timer" class="instruction-timer"></p>
+      <button id="next-instruction">Continua</button>
+    </div>
+
+    <!-- Schermata trial -->
+    <div id="trial-screen" class="screen hidden">
+      <div id="category-label"></div>
+      <img id="stimulus-image" alt="stimolo">
+      <p class="hint">Premi A o L</p>
+
+      <!-- Barra di avanzamento -->
+      <div id="progress-container">
+        <div id="progress-track">
+            <div id="progress-fill"></div>
+        </div>
+        <div id="progress-text"></div>
+      </div>
+    </div>
+
+    <!-- Schermata finale -->
+    <div id="end-screen" class="screen hidden">
+      <h2>Il test è terminato</h2>
+      <p>Grazie per aver partecipato.</p>
+    </div>
+
+  </div>
+
+  <script src="iat.config.js"></script>
+  <script src="iat.core.js"></script>
+
+</body>
+</html>
