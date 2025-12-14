@@ -16,8 +16,8 @@ const IAT_CONFIG = {
     // images3 viene generato da images1 in codice invertendo RispostaCorretta
   },
   stimFolders: {
-    images1: "images1/",
-    images2: "images2/"
+    images1: "images1/optimized/",
+    images2: "images2/optimized/"
   },
 
   // Durata visibile dello stimolo (ms)
@@ -39,10 +39,10 @@ const IAT_CONFIG = {
 // Se un blocco non è presente qui, viene mostrata la categoria dell'immagine
   blockLabels: {
     1: "Conflitto = A    Neutre = L",
-    2: "Spiacevoli = A    Piacevoli-Neutre = L",
-    3: "Conflitto e Spiacevole = A    Neutre e Piacevole/Neutra = L",
+    2: "Spiacevoli = A    Piacevoli = L",
+    3: "Conflitto e Spiacevole = A    Neutre e Piacevole = L",
     4: "Neutre = A    Conflitto = L",
-    5: "Neutre o Spiacevole = A    Conflitto o Piacevole/Neutra = L"
+    5: "Neutre o Spiacevole = A    Conflitto o Piacevole = L"
   },
 
   // Testi delle istruzioni per ciascun blocco (HTML)
@@ -57,7 +57,7 @@ const IAT_CONFIG = {
     2: `
       <p>Adesso è richiesto al partecipante di categorizzare le immagini, che verranno mostrate successivamente, come:</p>
       <p><strong>Spiacevoli</strong> = premere il tasto <strong>A</strong></p>
-      <p><strong>Piacevoli-Neutre</strong> = premere il tasto <strong>L</strong></p>
+      <p><strong>Piacevoli</strong> = premere il tasto <strong>L</strong></p>
       <br>
     `,
     3: `
@@ -65,7 +65,7 @@ const IAT_CONFIG = {
       <p>Al centro dello schermo verranno presentate, una alla volta, le immagini di diverso tipo.</p>
       <p>Il compito è classificare ogni immagine il più rapidamente e accuratamente possibile, premendo:</p>
       <p>il tasto <strong>A</strong> se l’immagine appartiene a una delle categorie mostrate a sinistra (<strong>Conflitto</strong> e <strong>Spiacevole</strong>)</p>
-      <p>il tasto <strong>L</strong> se l’immagine appartiene a una delle categorie mostrate a destra (<strong>Neutre</strong> e <strong>Piacevole/Neutra</strong>)</p>
+      <p>il tasto <strong>L</strong> se l’immagine appartiene a una delle categorie mostrate a destra (<strong>Neutre</strong> e <strong>Piacevole</strong>)</p>
       <br>
       <p>Rispondi il più velocemente possibile, senza pensarci troppo, cercando allo stesso tempo di evitare errori.</p>
       <br>
@@ -85,7 +85,7 @@ const IAT_CONFIG = {
       <p>Al centro dello schermo verranno presentate, una alla volta, le immagini di diverso tipo.</p>
       <p>Il compito è classificare ogni immagine il più rapidamente e accuratamente possibile, premendo:</p>
       <p>il tasto <strong>A</strong> se l’immagine appartiene a una delle categorie mostrate a sinistra (<strong>Neutre</strong> e <strong>Spiacevole</strong>)</p>
-      <p>il tasto <strong>L</strong> se l’immagine appartiene a una delle categorie mostrate a destra (<strong>Conflitto</strong> e <strong>Piacevole/Neutra</strong>)</p>
+      <p>il tasto <strong>L</strong> se l’immagine appartiene a una delle categorie mostrate a destra (<strong>Conflitto</strong> e <strong>Piacevole</strong>)</p>
       <br>
       <p>Rispondi il più velocemente possibile, senza pensarci troppo, cercando allo stesso tempo di evitare errori.</p>
       <br>
@@ -125,10 +125,10 @@ function iatBuildBlocks(baseStimuli) {
   const isSpiacevole = (cat) =>
     cat && cat.toLowerCase().includes("spiac"); // es. "Spiacevole"
 
-  const isPiacevoleNeutro = (cat) => {
+  const isPiacevole = (cat) => {
     if (!cat) return false;
     const c = cat.toLowerCase();
-    return c.includes("piace") || c.includes("neutr"); // es. "Piacevole-Neutra"
+    return c.includes("piace"); // es. "Piacevole"
   };
 
   // -------- BLOCCO 1 --------
@@ -142,10 +142,10 @@ function iatBuildBlocks(baseStimuli) {
   iatShuffleArray(b1);
 
   // -------- BLOCCO 2 --------
-  // 10 immagini (5 Spiacevoli + 5 Piacevoli-Neutre) random da images2
+  // 10 immagini (5 Spiacevoli + 5 Piacevoli) random da images2
   const spiace2 = s2.filter((t) => isSpiacevole(t.category));
-  const piace2 = s2.filter((t) => isPiacevoleNeutro(t.category));
-  console.log("Bloc2 - spiacevoli:", spiace2.length, "piacevoli-neutre:", piace2.length);
+  const piace2 = s2.filter((t) => isPiacevole(t.category));
+  console.log("Bloc2 - spiacevoli:", spiace2.length, "piacevoli:", piace2.length);
   const b2 = [
     ...iatSampleN(spiace2, 5),
     ...iatSampleN(piace2, 5)

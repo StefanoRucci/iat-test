@@ -70,6 +70,18 @@ function loadAllStimuli() {
       const { blocks, totalTrialsCount } = iatBuildBlocks(IAT_STATE.baseStimuli);
       IAT_STATE.blocks = blocks;
       IAT_STATE.totalTrialsCount = totalTrialsCount;
+
+            // Preload di tutte le immagini usate nel test
+      const allTrials = blocks.flat();
+
+      preloadImages(allTrials).then((res) => {
+        const ok = res.filter(r => r.ok).length;
+        const fail = res.length - ok;
+        console.log(
+          `Preload immagini completato: OK=${ok}, FAIL=${fail}`
+        );
+      });
+
     })
     .catch((err) => {
       console.error(err);
@@ -569,4 +581,25 @@ function downloadResultsCSV() {
   a.click();
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
+}
+
+function preloadImages(trials) {
+  // Precarica in parallelo, ma evita duplicati
+  const uniqueSrc = new Set();
+
+  for (const t of trials) {
+    const folder = IAT_CONFIG.stimFolders[t.folder] || "";
+    uniqueSrc.add(folder + t.image);
+  }
+
+  const promises = [];
+  for (const src of uniqueSrc) {
+    promises.push(new Promise((resolve) => {
+      const img = new Image();
+      img.onload = () => resolve({ src, ok: true });
+      img.onerror = () => resolve({ src, ok: false });
+      img.src = src;
+    }));
+  }
+  return Promise.all(promises);
 }
