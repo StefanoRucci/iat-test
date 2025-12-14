@@ -40,7 +40,7 @@ const IAT_CONFIG = {
   blockLabels: {
     1: "Conflitto = A    Neutre = L",
     2: "Spiacevoli = A    Piacevoli = L",
-    3: "Conflitto e Spiacevole = A    Neutre e Piacevole = L",
+    3: "Conflitto o Spiacevole = A    Neutre o Piacevole = L",
     4: "Neutre = A    Conflitto = L",
     5: "Neutre o Spiacevole = A    Conflitto o Piacevole = L"
   },
@@ -64,8 +64,8 @@ const IAT_CONFIG = {
       <p>In questa sezione il partecipante vedrà sullo schermo due gruppi di categorie, uno a sinistra e uno a destra.</p>
       <p>Al centro dello schermo verranno presentate, una alla volta, le immagini di diverso tipo.</p>
       <p>Il compito è classificare ogni immagine il più rapidamente e accuratamente possibile, premendo:</p>
-      <p>il tasto <strong>A</strong> se l’immagine appartiene a una delle categorie mostrate a sinistra (<strong>Conflitto</strong> e <strong>Spiacevole</strong>)</p>
-      <p>il tasto <strong>L</strong> se l’immagine appartiene a una delle categorie mostrate a destra (<strong>Neutre</strong> e <strong>Piacevole</strong>)</p>
+      <p>il tasto <strong>A</strong> se l’immagine appartiene a una delle categorie mostrate a sinistra (<strong>Conflitto</strong> o <strong>Spiacevole</strong>)</p>
+      <p>il tasto <strong>L</strong> se l’immagine appartiene a una delle categorie mostrate a destra (<strong>Neutre</strong> o <strong>Piacevole</strong>)</p>
       <br>
       <p>Rispondi il più velocemente possibile, senza pensarci troppo, cercando allo stesso tempo di evitare errori.</p>
       <br>
@@ -84,8 +84,8 @@ const IAT_CONFIG = {
       <p>In questa sezione il partecipante vedrà nuovamente sullo schermo due gruppi di categorie, uno a sinistra e uno a destra dello schermo.</p>
       <p>Al centro dello schermo verranno presentate, una alla volta, le immagini di diverso tipo.</p>
       <p>Il compito è classificare ogni immagine il più rapidamente e accuratamente possibile, premendo:</p>
-      <p>il tasto <strong>A</strong> se l’immagine appartiene a una delle categorie mostrate a sinistra (<strong>Neutre</strong> e <strong>Spiacevole</strong>)</p>
-      <p>il tasto <strong>L</strong> se l’immagine appartiene a una delle categorie mostrate a destra (<strong>Conflitto</strong> e <strong>Piacevole</strong>)</p>
+      <p>il tasto <strong>A</strong> se l’immagine appartiene a una delle categorie mostrate a sinistra (<strong>Neutre</strong> o <strong>Spiacevole</strong>)</p>
+      <p>il tasto <strong>L</strong> se l’immagine appartiene a una delle categorie mostrate a destra (<strong>Conflitto</strong> o <strong>Piacevole</strong>)</p>
       <br>
       <p>Rispondi il più velocemente possibile, senza pensarci troppo, cercando allo stesso tempo di evitare errori.</p>
       <br>
