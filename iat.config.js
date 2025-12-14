@@ -36,7 +36,7 @@ const IAT_CONFIG = {
   savedBlocks: new Set([3, 5]),
 
   // Testo fisso per blocco (sopra/sotto l’immagine)
-// Se un blocco non è presente qui, viene mostrata la categoria dell'immagine
+  // Se un blocco non è presente qui, viene mostrata la categoria dell'immagine
   blockLabels: {
     1: "Conflitto = A    Neutre = L",
     2: "Spiacevoli = A    Piacevoli = L",
@@ -106,69 +106,37 @@ const IAT_CONFIG = {
 // (insieme a IAT_CONFIG) per cambiare la struttura dei blocchi.
 
 function iatBuildBlocks(baseStimuli) {
-  const s1 = baseStimuli.images1;
-  const s2 = baseStimuli.images2;
-  const s3 = baseStimuli.images3;
+  let s1 = baseStimuli.images1;
+  let s2 = baseStimuli.images2;
+  let s3 = baseStimuli.images3;
+
+  // Dedup robusto: elimina eventuali doppioni per folder+filename
+  s1 = iatUniqueByKey(s1, iatStimKey);
+  s2 = iatUniqueByKey(s2, iatStimKey);
+  s3 = iatUniqueByKey(s3, iatStimKey);
 
   if (!s1.length || !s2.length || !s3.length) {
     console.warn("Stimoli mancanti per preparare i blocchi.");
     return { blocks: [], totalTrialsCount: 0 };
   }
 
-  // helper categorie (adatta se cambi i nomi nel CSV)
-  const isConflitto = (cat) =>
-    cat && cat.toLowerCase().includes("confl"); // es. "Conflitto"
-
-  const isNeutro = (cat) =>
-    cat && cat.toLowerCase().includes("neut"); // es. "Neutre"
-
-  const isSpiacevole = (cat) =>
-    cat && cat.toLowerCase().includes("spiac"); // es. "Spiacevole"
-
-  const isPiacevole = (cat) => {
-    if (!cat) return false;
-    const c = cat.toLowerCase();
-    return c.includes("piace"); // es. "Piacevole"
-  };
-
-  // -------- BLOCCO 1 --------
-  // 10 immagini (5 conflitto + 5 neutre) random da images1
-  const confl1 = s1.filter((t) => isConflitto(t.category));
-  const neutr1 = s1.filter((t) => isNeutro(t.category));
-  const b1 = [
-    ...iatSampleN(confl1, 5),
-    ...iatSampleN(neutr1, 5)
-  ].map((t) => ({ ...t, block: 1 }));
+  // ✅ BLOCCO 1: tutte le immagini di images1
+  const b1 = [...s1].map((t) => ({ ...t, block: 1 }));
   iatShuffleArray(b1);
 
-  // -------- BLOCCO 2 --------
-  // 10 immagini (5 Spiacevoli + 5 Piacevoli) random da images2
-  const spiace2 = s2.filter((t) => isSpiacevole(t.category));
-  const piace2 = s2.filter((t) => isPiacevole(t.category));
-  console.log("Bloc2 - spiacevoli:", spiace2.length, "piacevoli:", piace2.length);
-  const b2 = [
-    ...iatSampleN(spiace2, 5),
-    ...iatSampleN(piace2, 5)
-  ].map((t) => ({ ...t, block: 2 }));
+  // ✅ BLOCCO 2: tutte le immagini di images2
+  const b2 = [...s2].map((t) => ({ ...t, block: 2 }));
   iatShuffleArray(b2);
 
-  // -------- BLOCCO 3 --------
-  // tutte le 20 di images1 + 20 di images2, totale 40
+  // ✅ BLOCCO 3: tutte le immagini di images1 + images2 (40)
   const b3 = [...s1, ...s2].map((t) => ({ ...t, block: 3 }));
   iatShuffleArray(b3);
 
-  // -------- BLOCCO 4 --------
-  // 10 immagini (5 conflitto + 5 neutre) random da images3
-  const confl3 = s3.filter((t) => isConflitto(t.category));
-  const neutr3 = s3.filter((t) => isNeutro(t.category));
-  const b4 = [
-    ...iatSampleN(confl3, 5),
-    ...iatSampleN(neutr3, 5)
-  ].map((t) => ({ ...t, block: 4 }));
+  // ✅ BLOCCO 4: tutte le immagini di images3 (images1 con risposte invertite)
+  const b4 = [...s3].map((t) => ({ ...t, block: 4 }));
   iatShuffleArray(b4);
 
-  // -------- BLOCCO 5 --------
-  // tutte le 20 di images2 + 20 di images3, totale 40
+  // ✅ BLOCCO 5: tutte le immagini di images2 + images3 (40)
   const b5 = [...s2, ...s3].map((t) => ({ ...t, block: 5 }));
   iatShuffleArray(b5);
 
@@ -176,15 +144,49 @@ function iatBuildBlocks(baseStimuli) {
   const totalTrialsCount = blocks.reduce((sum, b) => sum + b.length, 0);
 
   console.log("Blocchi preparati. Trial totali:", totalTrialsCount);
+  console.log("Lunghezze blocchi:", blocks.map(b => b.length)); // utile per debug, puoi rimuoverlo
 
   return { blocks, totalTrialsCount };
 }
 
 // ==========================
-// PICCOLE UTILITY USATE SOLO QUI
+// UTILITY (USATE ORA)
 // ==========================
 
-// Estrae n elementi random da un array (senza modificare l'originale)
+// Shuffle in-place (usato ora)
+function iatShuffleArray(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+}
+
+// Chiave unica per uno stimolo (usato ora)
+function iatStimKey(t) {
+  return `${t.folder}/${t.image}`;
+}
+
+// Dedup per chiave (usato ora)
+function iatUniqueByKey(arr, keyFn) {
+  const seen = new Set();
+  const out = [];
+  for (const item of arr) {
+    const k = keyFn(item);
+    if (seen.has(k)) continue;
+    seen.add(k);
+    out.push(item);
+  }
+  return out;
+}
+
+// ==========================
+// UTILITY (OPZIONALI / FUTURO)
+// ==========================
+// Non usate dalla logica attuale, ma utili se in futuro torni
+// a fare blocchi con subset random (es. 5+5).
+
+// Estrae N elementi random (senza modificare l'originale)
 function iatSampleN(arr, n) {
   if (n >= arr.length) {
     return iatShuffleArray([...arr]).slice(0, arr.length);
@@ -194,11 +196,12 @@ function iatSampleN(arr, n) {
   return copy.slice(0, n);
 }
 
-// Shuffle in-place
-function iatShuffleArray(array) {
-  for (let i = array.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [array[i], array[j]] = [array[j], array[i]];
-  }
-  return array;
+// Campiona N elementi distinti (senza ripetizioni per keyFn)
+// e aggiorna il set usedKeys per evitare sovrapposizioni tra gruppi.
+function iatSampleNDistinct(arr, n, keyFn, usedKeys = new Set()) {
+  const candidates = arr.filter((t) => !usedKeys.has(keyFn(t)));
+  iatShuffleArray(candidates);
+  const picked = candidates.slice(0, n);
+  for (const t of picked) usedKeys.add(keyFn(t));
+  return { picked, usedKeys };
 }
