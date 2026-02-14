@@ -22,7 +22,10 @@ const IAT_STATE = {
   hideTimeoutId: null,      // id del setTimeout che nasconde l'immagine
   results: [],              // solo blocchi configurati in savedBlocks
   canLeaveInstructions: false,
-  instrTimerIntervalId: null   // intervallo per il countdown istruzioni
+  instrTimerIntervalId: null,   // intervallo per il countdown istruzioni
+  canStartPreScreen: false,
+  prestartTimerIntervalId: null
+
 
 };
 
@@ -32,6 +35,11 @@ const IAT_STATE = {
 
 document.addEventListener("DOMContentLoaded", () => {
   console.log("Pagina caricata, inizializzo...");
+
+  const prestartBtn = document.getElementById("prestart-button");
+  if (prestartBtn) {
+    prestartBtn.addEventListener("click", handlePrestartContinue);
+  }
 
   const startButton = document.getElementById("start-button");
   if (startButton) {
@@ -45,6 +53,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Carica gli stimoli di base (images1 e images2)
   loadAllStimuli();
+
+  // Mostra la schermata iniziale prima del telefono
+  showPrestartScreen();
 });
 
 // ==========================
@@ -168,6 +179,83 @@ function createImages3FromImages1(images1Array) {
 // SCHERMATA INIZIALE
 // ==========================
 
+function showPrestartScreen() {
+  hideAllScreens();
+
+  const pre = document.getElementById("prestart-screen");
+  const btn = document.getElementById("prestart-button");
+  const timerEl = document.getElementById("prestart-timer");
+  const startScreen = document.getElementById("start-screen");
+
+  const textEl = document.getElementById("prestart-text");
+  if (textEl && IAT_CONFIG.prestartHtml) {
+    textEl.innerHTML = IAT_CONFIG.prestartHtml;
+  }
+
+  if (startScreen) startScreen.classList.add("hidden");
+  if (!pre || !btn) return;
+
+  pre.classList.remove("hidden");
+
+  // reset timer/flag
+  IAT_STATE.canStartPreScreen = false;
+  btn.disabled = true;
+
+  if (timerEl) timerEl.textContent = "";
+
+  if (IAT_STATE.prestartTimerIntervalId !== null) {
+    clearInterval(IAT_STATE.prestartTimerIntervalId);
+    IAT_STATE.prestartTimerIntervalId = null;
+  }
+
+  const waitMs = 30000; // 30 secondi fissi
+  const endTime = Date.now() + waitMs;
+
+  const tick = () => {
+    const remaining = endTime - Date.now();
+    if (remaining <= 0) {
+      IAT_STATE.canStartPreScreen = true;
+      btn.disabled = false;
+      if (timerEl) timerEl.textContent = "Ora può iniziare (premi Invio o clicca Inizia).";
+
+      clearInterval(IAT_STATE.prestartTimerIntervalId);
+      IAT_STATE.prestartTimerIntervalId = null;
+      return;
+    }
+
+    const sec = Math.ceil(remaining / 1000);
+    if (timerEl) timerEl.textContent = `Potrà iniziare tra ${sec} secondi...`;
+  };
+
+  tick();
+  IAT_STATE.prestartTimerIntervalId = setInterval(tick, 250);
+
+  document.addEventListener("keydown", handlePrestartKey);
+}
+
+function handlePrestartKey(e) {
+  if (e.key === "Enter") {
+    handlePrestartContinue();
+  }
+}
+
+function handlePrestartContinue() {
+  if (!IAT_STATE.canStartPreScreen) return;
+
+  document.removeEventListener("keydown", handlePrestartKey);
+
+  if (IAT_STATE.prestartTimerIntervalId !== null) {
+    clearInterval(IAT_STATE.prestartTimerIntervalId);
+    IAT_STATE.prestartTimerIntervalId = null;
+  }
+
+  const pre = document.getElementById("prestart-screen");
+  const startScreen = document.getElementById("start-screen");
+  if (pre) pre.classList.add("hidden");
+  if (startScreen) startScreen.classList.remove("hidden");
+}
+
+
 function handleStart() {
   const input = document.getElementById("phone-last3");
   const error = document.getElementById("start-error");
@@ -245,7 +333,7 @@ function showInstructionScreen() {
       if (remainingMs <= 0) {
         // tempo scaduto
         if (timerEl) {
-          timerEl.textContent = "Ora puoi iniziare (premi Invio o Continua).";
+          timerEl.textContent = "Ora può iniziare (premi Invio o Continua).";
         }
         IAT_STATE.canLeaveInstructions = true;
         nextBtn.disabled = false;
@@ -260,7 +348,7 @@ function showInstructionScreen() {
 
       const sec = Math.ceil(remainingMs / 1000);
       if (timerEl) {
-        timerEl.textContent = `Potrai iniziare tra ${sec} secondi...`;
+        timerEl.textContent = `Potrà iniziare tra ${sec} secondi...`;
       }
     };
 
@@ -514,7 +602,7 @@ function endExperiment() {
 // ==========================
 
 function hideAllScreens() {
-  const ids = ["instruction-screen", "trial-screen", "end-screen"];
+  const ids = ["prestart-screen", "start-screen", "instruction-screen", "trial-screen", "end-screen"];
   ids.forEach((id) => {
     const el = document.getElementById(id);
     if (el && !el.classList.contains("hidden")) {
