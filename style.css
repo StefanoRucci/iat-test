@@ -160,3 +160,69 @@ button:disabled {
   cursor: not-allowed;
   transform: none;
 }
+
+.code-input-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin: 20px 0;
+}
+
+.code-input-wrapper input {
+  width: 60px;
+  text-align: center;
+  font-size: 1.3rem;
+  letter-spacing: 2px;
+}
+
+.code-input-wrapper input {
+  width: 60px;
+  text-align: center;
+  font-size: 1.3rem;
+  letter-spacing: 2px;
+  transition: all 0.2s ease;
+}
+
+.code-input-wrapper input:focus {
+  outline: none;
+  border: 2px solid #38bdf8;
+  box-shadow: 0 0 10px rgba(56,189,248,0.6);
+  transform: scale(1.05);
+}
+
+input.valid {
+  border: 2px solid #22c55e; /* verde */
+}
+
+input.invalid {
+  border: 2px solid #ef4444; /* rosso */
+}
+.code-input-wrapper input {
+  border: 2px solid transparent; /* base */
+}
+
+/* stato valido/errato */
+.code-input-wrapper input.valid {
+  border-color: #22c55e;
+}
+.code-input-wrapper input.invalid {
+  border-color: #ef4444;
+}
+
+/* IMPORTANT: anche in focus devono vincere */
+.code-input-wrapper input.valid:focus {
+  border-color: #22c55e;
+}
+.code-input-wrapper input.invalid:focus {
+  border-color: #ef4444;
+}
+.hint {
+  color: #94a3b8; /* grigio soft */
+  font-size: 0.9rem;
+  margin-top: 6px;
+}
+
+.error-text {
+  color: #ef4444; /* rosso */
+}

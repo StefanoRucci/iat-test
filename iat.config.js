@@ -35,8 +35,11 @@ const IAT_CONFIG = {
   // Quali blocchi salvare nel CSV finale
   savedBlocks: new Set([3, 5]),
 
-  // Testo fisso per istruzione pagina iniziale pre richiesta numero cell
+  // Testo fisso per istruzione pagina iniziale
   prestartHtml: IAT_TEXTS.prestartHtml,
+
+  // Testo fisso per istruzioni generazione codice id
+  participantCodeInstructionsHtml: IAT_TEXTS.participantCodeInstructionsHtml,
 
   // Testo fisso per blocco (sopra/sotto l’immagine)
   // Se un blocco non è presente qui, viene mostrata la categoria dell'immagine

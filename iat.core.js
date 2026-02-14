@@ -17,7 +17,7 @@ const IAT_STATE = {
   currentTrialIndex: 0,     // indice trial nel blocco corrente
   totalTrialsCount: 0,      // es. 110
   completedTrials: 0,       // quanti trial completati in tutto il test
-  phoneLast3: "",
+  participantCode: "",
   trialStartTime: null,
   hideTimeoutId: null,      // id del setTimeout che nasconde l'immagine
   results: [],              // solo blocchi configurati in savedBlocks
@@ -36,6 +36,132 @@ const IAT_STATE = {
 document.addEventListener("DOMContentLoaded", () => {
   console.log("Pagina caricata, inizializzo...");
 
+  const mother = document.getElementById("mother-code");
+  const father = document.getElementById("father-code");
+  const day = document.getElementById("birth-day");
+
+  if (father) father.disabled = true;
+  if (day) day.disabled = true;
+
+  function autoAdvance(current, next, isLetter = true) {
+    if (!current) return;
+
+    current.addEventListener("input", () => {
+      let val = current.value;
+
+      if (isLetter) {
+        val = val.replace(/[^a-zA-Z]/g, "").toUpperCase();
+      } else {
+        val = val.replace(/[^0-9]/g, "");
+      }
+
+      current.value = val;
+
+      if (val.length === 2 && next) {
+        next.disabled = false;
+        next.focus();
+      }
+    });
+  }
+
+  autoAdvance(mother, father, true);
+  autoAdvance(father, day, true);
+  autoAdvance(day, null, false);
+
+  function validateCodeFields() {
+    const error = document.getElementById("start-error");
+
+    const m = mother.value.trim().toUpperCase();
+    const f = father.value.trim().toUpperCase();
+    const d = day.value.trim();
+
+    mother.classList.remove("valid", "invalid");
+    father.classList.remove("valid", "invalid");
+    day.classList.remove("valid", "invalid");
+
+    let message = "";
+    let isError = false;
+    let allValid = true;
+
+    // --- MADRE ---
+    if (m.length === 0) {
+      allValid = false;
+    } 
+    else if (m.length < 2) {
+      message = "Inserisci 2 lettere (es. MA).";
+      allValid = false;
+    }
+    else if (!/^[A-Z]{2}$/.test(m)) {
+      mother.classList.add("invalid");
+      message = "Solo lettere A-Z.";
+      isError = true;
+      allValid = false;
+    }
+    else {
+      mother.classList.add("valid");
+    }
+
+    // --- PADRE ---
+    if (!message) {
+      if (f.length === 0) {
+        allValid = false;
+      }
+      else if (f.length < 2) {
+        message = "Inserisci 2 lettere (es. PA).";
+        allValid = false;
+      }
+      else if (!/^[A-Z]{2}$/.test(f)) {
+        father.classList.add("invalid");
+        message = "Solo lettere A-Z.";
+        isError = true;
+        allValid = false;
+      }
+      else {
+        father.classList.add("valid");
+      }
+    } else {
+      allValid = false;
+    }
+
+    // --- GIORNO ---
+    if (!message) {
+      if (d.length === 0) {
+        allValid = false;
+      }
+      else if (d.length < 2) {
+        message = "Inserisci 2 cifre (es. 04).";
+        allValid = false;
+      }
+      else {
+        const dayNum = parseInt(d, 10);
+        if (!/^[0-9]{2}$/.test(d) || dayNum < 1 || dayNum > 31) {
+          day.classList.add("invalid");
+          message = "Il giorno deve essere tra 01 e 31.";
+          isError = true;
+          allValid = false;
+        } else {
+          day.classList.add("valid");
+        }
+      }
+    } else {
+      allValid = false;
+    }
+
+    // aggiorna bottone
+    const startButtonEl = document.getElementById("start-button");
+    if (startButtonEl) startButtonEl.disabled = !allValid;
+
+    // mostra hint o errore
+    if (error) {
+      error.textContent = message;
+      error.className = isError ? "error-text" : "hint";
+    }
+  }
+
+  mother.addEventListener("input", validateCodeFields);
+  father.addEventListener("input", validateCodeFields);
+  day.addEventListener("input", validateCodeFields);
+
   const prestartBtn = document.getElementById("prestart-button");
   if (prestartBtn) {
     prestartBtn.addEventListener("click", handlePrestartContinue);
@@ -44,6 +170,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const startButton = document.getElementById("start-button");
   if (startButton) {
     startButton.addEventListener("click", handleStart);
+    startButton.disabled = true;
   }
 
   const nextInstrButton = document.getElementById("next-instruction");
@@ -251,38 +378,69 @@ function handlePrestartContinue() {
 
   const pre = document.getElementById("prestart-screen");
   const startScreen = document.getElementById("start-screen");
+
+  const codeInstruction = document.getElementById("code-instruction");
+
+  // 🔹 Inserimento dinamico testo istruzioni codice
+  if (codeInstruction && IAT_CONFIG.participantCodeInstructionsHtml) {
+    codeInstruction.innerHTML =
+      IAT_CONFIG.participantCodeInstructionsHtml;
+  }
+
   if (pre) pre.classList.add("hidden");
   if (startScreen) startScreen.classList.remove("hidden");
+
+  // 🔹 autofocus sul primo campo
+  const mother = document.getElementById("mother-code");
+  if (mother) mother.focus();
 }
 
 
 function handleStart() {
-  const input = document.getElementById("phone-last3");
+  const mother = document.getElementById("mother-code");
+  const father = document.getElementById("father-code");
+  const day = document.getElementById("birth-day");
   const error = document.getElementById("start-error");
 
-  if (!input || !error) return;
+  if (!mother || !father || !day || !error) return;
 
-  const value = input.value.trim();
+  const m = mother.value.trim().toUpperCase();
+  const f = father.value.trim().toUpperCase();
+  const d = day.value.trim();
 
-  // controllo che siano esattamente 3 cifre numeriche
-  if (!/^[0-9]{3}$/.test(value)) {
-    error.textContent = "Inserisci esattamente 3 cifre numeriche.";
+  // Validazione lettere
+  if (!/^[A-Z]{2}$/.test(m)) {
+    error.textContent = "Inserisci le prime 2 lettere del nome della madre.";
     return;
   }
 
-  IAT_STATE.phoneLast3 = value;
+  if (!/^[A-Z]{2}$/.test(f)) {
+    error.textContent = "Inserisci le prime 2 lettere del nome del padre.";
+    return;
+  }
+
+  // Validazione giorno
+  if (!/^[0-9]{2}$/.test(d)) {
+    error.textContent = "Il giorno deve essere composto da 2 cifre (es. 07).";
+    return;
+  }
+
+  const dayNum = parseInt(d, 10);
+  if (dayNum < 1 || dayNum > 31) {
+    error.textContent = "Il giorno deve essere compreso tra 01 e 31.";
+    return;
+  }
+
+  const code = m + f + d;
+  IAT_STATE.participantCode = code;
+
   error.textContent = "";
 
-  console.log("Numero soggetto:", IAT_STATE.phoneLast3);
-
-  // rimuovo la schermata iniziale
   const startScreen = document.getElementById("start-screen");
   if (startScreen) startScreen.remove();
 
-  // inizializzo progress bar
   updateProgress(0, IAT_STATE.totalTrialsCount || 110);
 
-  // parto dal blocco 1 (indice 0)
   IAT_STATE.currentBlockIndex = 0;
   showInstructionScreen();
 }
@@ -535,7 +693,7 @@ function handleTrialKey(e) {
   // Salva SOLO se il blocco è tra quelli da salvare
   if (IAT_CONFIG.savedBlocks.has(trial.block)) {
     IAT_STATE.results.push({
-      numero_telefono: IAT_STATE.phoneLast3,
+      codice_partecipante: IAT_STATE.participantCode,
       immagine: trial.image,
       tipo_immagine: trial.category,
       risposta_data: rispostaData,
@@ -633,7 +791,7 @@ function downloadResultsCSV() {
   const sep = ";";
 
   const headers = [
-    "Numero_telefono",
+    "Codice_partecipante",
     "Immagine",
     "Tipo_immagine",
     "Risposta_data",
@@ -644,7 +802,7 @@ function downloadResultsCSV() {
   ];
 
   const rows = IAT_STATE.results.map((r) => [
-    r.numero_telefono,
+    r.codice_partecipante,
     r.immagine,
     r.tipo_immagine,
     r.risposta_data,
@@ -663,7 +821,7 @@ function downloadResultsCSV() {
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
-  const filename = `IAT_risultati_${IAT_STATE.phoneLast3}.csv`;
+  const filename = `IAT_risultati_${IAT_STATE.participantCode}.csv`;
   a.download = filename;
   document.body.appendChild(a);
   a.click();

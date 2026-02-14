@@ -21,13 +21,20 @@
 
 
     <!-- Schermata iniziale -->
-    <div id="start-screen" class="screen">
-      <h1>IAT Test</h1>
-      <p>Inserisci le <strong>ultime 3 cifre</strong> del tuo numero di cellulare per iniziare.</p>
+    <div id="start-screen" class="screen hidden">
+      <h2>Inserisca il Suo codice identificativo</h2>
 
-      <input type="text" id="phone-last3" maxlength="3" placeholder="000">
+      <div id="code-instruction"></div>
 
-      <button id="start-button">Inizia</button>
+      <div class="code-input-wrapper">
+        <input type="text" id="mother-code" maxlength="2" autocomplete="off">
+        <span>-</span>
+        <input type="text" id="father-code" maxlength="2" autocomplete="off">
+        <span>-</span>
+        <input type="text" id="birth-day" maxlength="2" autocomplete="off">
+      </div>
+
+      <button id="start-button">Continua</button>
       <p id="start-error" class="error"></p>
     </div>
 

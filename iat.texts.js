@@ -18,6 +18,18 @@ const IAT_TEXTS = {
     <br>
   `,
 
+  participantCodeInstructionsHtml: `
+    <p class="code-instruction">
+      Inserisca:
+      <br>
+      • le prime <strong>2 lettere</strong> del nome della madre
+      <br>
+      • le prime <strong>2 lettere</strong> del nome del padre
+      <br>
+      • il <strong>giorno di nascita</strong> (2 cifre, es. 07)
+    </p>
+  `,
+
   blockLabels: {
     1: "Conflitto = A    Neutre = L",
     2: "Spiacevoli = A    Piacevoli = L",
