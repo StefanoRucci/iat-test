@@ -9,6 +9,7 @@
 // ==========================
 
 const IAT_CONFIG = {
+  debugMode: true, //DA CAMBIARE IN PROD
   // File CSV e cartelle immagini
   stimFiles: {
     images1: "images1.csv",

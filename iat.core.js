@@ -173,6 +173,20 @@ document.addEventListener("DOMContentLoaded", () => {
     startButton.disabled = true;
   }
 
+  // ENTER per avanzare nella schermata codice
+  document.addEventListener("keydown", (e) => {
+    if (e.key !== "Enter") return;
+
+    const startScreen = document.getElementById("start-screen");
+    if (!startScreen || startScreen.classList.contains("hidden")) return;
+
+    const startButton = document.getElementById("start-button");
+    if (startButton && !startButton.disabled) {
+      e.preventDefault();
+      handleStart();
+    }
+  });
+
   const nextInstrButton = document.getElementById("next-instruction");
   if (nextInstrButton) {
     nextInstrButton.addEventListener("click", handleInstructionContinue);
@@ -335,7 +349,7 @@ function showPrestartScreen() {
     IAT_STATE.prestartTimerIntervalId = null;
   }
 
-  const waitMs = 30000; // 30 secondi fissi
+  const waitMs = IAT_CONFIG.debugMode ? 0 : 30000; // 30 secondi fissi
   const endTime = Date.now() + waitMs;
 
   const tick = () => {
@@ -477,7 +491,7 @@ function showInstructionScreen() {
   }
 
   // tempo minimo per le istruzioni di questo blocco (se configurato)
-  const wait = IAT_CONFIG.instructionMinTimes[blockNumber];
+  const wait = IAT_CONFIG.debugMode ? 0 : IAT_CONFIG.instructionMinTimes[blockNumber];
 
   if (wait) {
     IAT_STATE.canLeaveInstructions = false;
@@ -610,9 +624,11 @@ function showNextTrial() {
 
   const trialScreen = document.getElementById("trial-screen");
   const imgElement = document.getElementById("stimulus-image");
-  const catLabel = document.getElementById("category-label");
+  //const catLabel = document.getElementById("category-label");
+  const leftEl = document.getElementById("category-left");
+  const rightEl = document.getElementById("category-right");
 
-  if (!trialScreen || !imgElement || !catLabel) return;
+  if (!trialScreen || !imgElement || !leftEl || !rightEl) return;
 
   // Aggiorna barra di avanzamento globale
   updateProgress(
@@ -621,8 +637,21 @@ function showNextTrial() {
   );
 
   // Etichetta fissa per blocco (se definita), altrimenti categoria
-  const label = IAT_CONFIG.blockLabels[trial.block];
-  catLabel.textContent = label || (trial.category || "");
+  const label = IAT_CONFIG.blockLabels[trial.block] || "";
+  // Atteso formato tipo: "Conflitto = A    Neutre = L"
+  const parts = label.split(/\s{2,}|\t+/); // spezza su spazi multipli o tab
+  const left = parts[0] || "";
+  const right = parts[1] || "";
+
+  if (leftEl) leftEl.textContent = left;
+  if (rightEl) rightEl.textContent = right;
+
+  const isLongBlock = (trial.block === 3 || trial.block === 5);
+  [leftEl, rightEl].forEach((el) => {
+    if (!el) return;
+    el.classList.toggle("compact", isLongBlock);
+    el.classList.toggle("centered", isLongBlock);
+  });
 
   // NASCONDE l'immagine prima di cambiare src
   imgElement.style.visibility = "hidden";
