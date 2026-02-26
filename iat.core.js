@@ -18,15 +18,17 @@ const IAT_STATE = {
   totalTrialsCount: 0,      // es. 110
   completedTrials: 0,       // quanti trial completati in tutto il test
   participantCode: "",
+  runId: null,
   trialStartTime: null,
   hideTimeoutId: null,      // id del setTimeout che nasconde l'immagine
   results: [],              // solo blocchi configurati in savedBlocks
   canLeaveInstructions: false,
   instrTimerIntervalId: null,   // intervallo per il countdown istruzioni
   canStartPreScreen: false,
-  prestartTimerIntervalId: null
-
-
+  prestartTimerIntervalId: null,
+  startTimestamp: null,
+  endTimestamp: null, 
+  sessionSummary: null,
 };
 
 // ==========================
@@ -447,6 +449,8 @@ function handleStart() {
 
   const code = m + f + d;
   IAT_STATE.participantCode = code;
+  IAT_STATE.runId = crypto.randomUUID();
+  IAT_STATE.startTimestamp = Date.now();
 
   error.textContent = "";
 
@@ -723,6 +727,7 @@ function handleTrialKey(e) {
   if (IAT_CONFIG.savedBlocks.has(trial.block)) {
     IAT_STATE.results.push({
       codice_partecipante: IAT_STATE.participantCode,
+      run_id: IAT_STATE.runId,
       immagine: trial.image,
       tipo_immagine: trial.category,
       risposta_data: rispostaData,
@@ -764,6 +769,22 @@ function goToNextBlockOrEnd() {
 
 function endExperiment() {
   hideAllScreens();
+  IAT_STATE.endTimestamp = Date.now();
+
+  const startIso = new Date(IAT_STATE.startTimestamp).toISOString();
+  const endIso = new Date(IAT_STATE.endTimestamp).toISOString();
+
+  const durationSec = Math.round((IAT_STATE.endTimestamp - IAT_STATE.startTimestamp) / 1000);
+  const durationMin = Math.round((durationSec / 60) * 100) / 100; // 2 decimali
+
+  IAT_STATE.sessionSummary = {
+    codice_partecipante: IAT_STATE.participantCode,
+    run_id: IAT_STATE.runId,
+    timestamp_start: startIso,
+    timestamp_end: endIso,
+    durata_min: durationMin,
+    trials_salvati: IAT_STATE.results.length
+  };
 
   const endScreen = document.getElementById("end-screen");
   if (endScreen) {
@@ -781,7 +802,9 @@ function endExperiment() {
     IAT_STATE.totalTrialsCount || 110
   );
 
-  downloadResultsCSV();
+  downloadSessionCSV();
+  downloadTrialsCSV();
+
 }
 
 // ==========================
@@ -814,13 +837,14 @@ function updateProgress(current, total) {
 }
 
 // Genera e scarica il CSV con SOLO i blocchi configurati (3 e 5 ora)
-function downloadResultsCSV() {
+function downloadTrialsCSV() {
   if (!IAT_STATE.results.length) return;
 
   const sep = ";";
 
   const headers = [
     "Codice_partecipante",
+    "Run_id",
     "Immagine",
     "Tipo_immagine",
     "Risposta_data",
@@ -832,6 +856,7 @@ function downloadResultsCSV() {
 
   const rows = IAT_STATE.results.map((r) => [
     r.codice_partecipante,
+    r.run_id,
     r.immagine,
     r.tipo_immagine,
     r.risposta_data,
@@ -842,16 +867,56 @@ function downloadResultsCSV() {
   ]);
 
   let csvContent = headers.join(sep) + "\n";
-  rows.forEach((row) => {
-    csvContent += row.join(sep) + "\n";
-  });
+  rows.forEach((row) => (csvContent += row.join(sep) + "\n"));
 
   const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
-  const filename = `IAT_risultati_${IAT_STATE.participantCode}.csv`;
-  a.download = filename;
+
+  const safeRun = (IAT_STATE.runId || "run").slice(0, 8);
+  a.download = `IAT_trials_${IAT_STATE.participantCode}_${safeRun}.csv`;
+
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function downloadSessionCSV() {
+  if (!IAT_STATE.sessionSummary) return;
+
+  const sep = ";";
+  const s = IAT_STATE.sessionSummary;
+
+  const headers = [
+    "Codice_partecipante",
+    "Run_id",
+    "Timestamp_start",
+    "Timestamp_end",
+    "Durata_min",
+    "Trials_salvati"
+  ];
+
+  const row = [
+    s.codice_partecipante,
+    s.run_id,
+    s.timestamp_start,
+    s.timestamp_end,
+    s.durata_min,
+    s.trials_salvati
+  ];
+
+  let csvContent = headers.join(sep) + "\n" + row.join(sep) + "\n";
+
+  const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+
+  const safeRun = (IAT_STATE.runId || "run").slice(0, 8);
+  a.download = `IAT_session_${IAT_STATE.participantCode}_${safeRun}.csv`;
+
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
