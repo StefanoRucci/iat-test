@@ -10,6 +10,9 @@
 
 const IAT_CONFIG = {
   debugMode: true, //DA CAMBIARE IN PROD
+  //sheetsEndpointUrl: "https://script.google.com/macros/s/AKfycbz7XcM1hUDqkw3B2Fl7lq28ju6c3HDhueuwqAOid2utWXGEIGU790GNrvNT3raU-brPPw/exec",
+  sheetsEndpointUrl: "https://script.google.com/macros/s/AKfycbxYyiaSMM67hGy-7ntB--_IdqOF2aXJybruhwlxS9FYon4UNKhwMZXQ9Q72yE1kxqdN/exec?secret=ndjkasndqwuiue38e3e28qsdjadn332",
+  sheetsSecret: "ndjkasndqwuiue38e3e28qsdjadn332",
   // File CSV e cartelle immagini
   stimFiles: {
     images1: "images1.csv",

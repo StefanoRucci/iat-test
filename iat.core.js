@@ -786,11 +786,6 @@ function endExperiment() {
     trials_salvati: IAT_STATE.results.length
   };
 
-  const endScreen = document.getElementById("end-screen");
-  if (endScreen) {
-    endScreen.classList.remove("hidden");
-  }
-
   console.log(
     "Esperimento finito. Trial salvati (blocchi configurati):",
     IAT_STATE.results.length
@@ -802,8 +797,11 @@ function endExperiment() {
     IAT_STATE.totalTrialsCount || 110
   );
 
-  downloadSessionCSV();
-  downloadTrialsCSV();
+  // Mostra schermata salvataggio
+  const saving = document.getElementById("saving-screen");
+  if (saving) saving.classList.remove("hidden");
+
+  sendResultsToSheets();
 
 }
 
@@ -812,7 +810,7 @@ function endExperiment() {
 // ==========================
 
 function hideAllScreens() {
-  const ids = ["prestart-screen", "start-screen", "instruction-screen", "trial-screen", "end-screen"];
+  const ids = ["prestart-screen", "start-screen", "instruction-screen", "trial-screen", "saving-screen", "end-screen"];
   ids.forEach((id) => {
     const el = document.getElementById(id);
     if (el && !el.classList.contains("hidden")) {
@@ -942,4 +940,60 @@ function preloadImages(trials) {
     }));
   }
   return Promise.all(promises);
+}
+
+async function sendResultsToSheets() {
+  const ENDPOINT_URL = IAT_CONFIG.sheetsEndpointUrl;
+
+  const payload = {
+    session: IAT_STATE.sessionSummary,
+    trials: IAT_STATE.results
+  };
+
+  const savingText = document.getElementById("saving-text");
+  const savingHint = document.getElementById("saving-hint");
+
+  if (savingText) savingText.textContent = "Non chiudere questa pagina.";
+  if (savingHint) savingHint.textContent = "Se la connessione è lenta, potrebbero volerci alcuni secondi.";
+
+  try {
+    const res = await fetch(ENDPOINT_URL, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify(payload)
+    });
+
+    // Leggi UNA SOLA VOLTA
+    const text = await res.text();
+
+    // Debug (puoi toglierlo quando sei tranquillo)
+    console.log("STATUS", res.status);
+    console.log("BODY", text);
+
+    // Parse robusto
+    let data = {};
+    try { data = JSON.parse(text); } catch (_) {}
+
+    if (!res.ok || data.ok !== true) {
+      if (savingText) savingText.textContent = "Errore nel salvataggio.";
+      if (savingHint) savingHint.textContent = "Non chiudere la pagina. Contatta il ricercatore.";
+      console.error("Sheets upload failed:", res.status, data, text);
+      return;
+    }
+
+    // OK -> mostra end-screen
+    hideAllScreens();
+    document.getElementById("end-screen")?.classList.remove("hidden");
+
+  } catch (err) {
+    if (savingText) savingText.textContent = "Errore di rete nel salvataggio.";
+    if (savingHint) savingHint.textContent = "Non chiudere la pagina. Riprova o contatta il ricercatore.";
+    console.error("Sheets upload error:", err);
+  }
+}
+
+function showEndStatusMessage(msg) {
+  // se hai un elemento sullo schermo finale, usalo; altrimenti console
+  const el = document.getElementById("end-status");
+  if (el) el.textContent = msg;
 }
