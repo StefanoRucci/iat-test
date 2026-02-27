@@ -15,7 +15,6 @@ const IAT_CONFIG = {
   sheetsSecret: "ndjkasndqwuiue38e3e28qsdjadn332",
   */
   sheetsEndpointUrl: "/api/submit",
-  sheetsSecret: "",
   // File CSV e cartelle immagini
   stimFiles: {
     images1: "images1.csv",

@@ -4,17 +4,20 @@ export default async function handler(req, res) {
   }
 
   try {
-    // Body: se arriva text/plain dal client, parse JSON
     const body =
-      typeof req.body === "string" ? JSON.parse(req.body || "{}") : (req.body || {});
+      typeof req.body === "string"
+        ? JSON.parse(req.body || "{}")
+        : (req.body || {});
 
     const r = await fetch(process.env.SHEETS_URL, {
       method: "POST",
       headers: {
-        "Content-Type": "text/plain;charset=utf-8",
-        "X-IAT-SECRET": process.env.SHEETS_SECRET
+        "Content-Type": "text/plain;charset=utf-8"
       },
-      body: JSON.stringify(body)
+      body: JSON.stringify({
+        ...body,
+        _secret: process.env.SHEETS_SECRET
+      })
     });
 
     const text = await r.text();
