@@ -14,7 +14,7 @@ const IAT_CONFIG = {
   sheetsEndpointUrl: "https://script.google.com/macros/s/AKfycbyCsL-G2C5_rCkMn39rmWdQJN5MEiifhFysJ75-9EST9CwP9Kli_QhUD7dct2fdNnjU/exec?secret=ndjkasndqwuiue38e3e28qsdjadn333",
   sheetsSecret: "ndjkasndqwuiue38e3e28qsdjadn332",
   */
-  sheetsEndpointUrl: "",
+  sheetsEndpointUrl: "/api/submit",
   sheetsSecret: "",
   // File CSV e cartelle immagini
   stimFiles: {
