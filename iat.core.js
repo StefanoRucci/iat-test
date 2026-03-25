@@ -21,6 +21,7 @@ const IAT_STATE = {
   runId: null,
   trialStartTime: null,
   hideTimeoutId: null,      // id del setTimeout che nasconde l'immagine
+  trialHasError: false,     // true se il partecipante ha sbagliato nel trial corrente
   results: [],              // solo blocchi configurati in savedBlocks
   canLeaveInstructions: false,
   instrTimerIntervalId: null,   // intervallo per il countdown istruzioni
@@ -698,13 +699,21 @@ function handleTrialKey(e) {
     return;
   }
 
-  const rt = Math.round(performance.now() - IAT_STATE.trialStartTime);
   const blockTrials = getCurrentBlockTrials();
   const trial = blockTrials[IAT_STATE.currentTrialIndex];
-
-  const rispostaData = key.toUpperCase();
   const rispostaCorretta = trial.correct || "";
-  const corretto = rispostaData === rispostaCorretta ? 1 : 0;
+
+  // Risposta errata: mostra X e aspetta il tasto corretto
+  if (key.toUpperCase() !== rispostaCorretta) {
+    IAT_STATE.trialHasError = true;
+    const feedback = document.getElementById("error-feedback");
+    if (feedback) feedback.classList.remove("hidden");
+    return;
+  }
+
+  const rt = Math.round(performance.now() - IAT_STATE.trialStartTime);
+  const rispostaData = key.toUpperCase();
+  const corretto = IAT_STATE.trialHasError ? 0 : 1;
 
   console.log(
     "Blocco",
@@ -740,8 +749,16 @@ function handleTrialKey(e) {
 
   IAT_STATE.currentTrialIndex++;
   IAT_STATE.trialStartTime = null;
+  IAT_STATE.trialHasError = false;
 
-  showNextTrial();
+  // Nascondi immagine e feedback errore (ITI: schermo blank)
+  const imgEl = document.getElementById("stimulus-image");
+  const feedback = document.getElementById("error-feedback");
+  if (imgEl) imgEl.style.visibility = "hidden";
+  if (feedback) feedback.classList.add("hidden");
+
+  // ITI: 250ms blank prima del trial successivo
+  setTimeout(showNextTrial, 250);
 }
 
 function endCurrentBlock() {

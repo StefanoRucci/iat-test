@@ -279,6 +279,16 @@ button:disabled {
   text-align: center !important;
 }
 
+/* ===== Error feedback ===== */
+
+#error-feedback {
+  font-size: 3rem;
+  font-weight: 900;
+  color: #dc2626;
+  margin: 8px 0 0;
+  line-height: 1;
+}
+
 /* ===== Saving screen ===== */
 
 .saving-row {

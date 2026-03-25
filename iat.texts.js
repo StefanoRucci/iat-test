@@ -44,6 +44,7 @@ const IAT_TEXTS = {
       <p>Il Suo scopo è quello di categorizzarle come:</p>
       <p><strong>Immagini relative al conflitto israeliano-palestinese</strong> = premere il tasto <strong>A</strong></p>
       <p><strong>Immagini neutre</strong> = premere il tasto <strong>L</strong></p>
+      <p>Se preme il tasto sbagliato, apparirà una <strong>X rossa</strong>. Prema il tasto corretto per proseguire.</p>
       <p>Prema il tasto <strong>"Enter"</strong> o faccia un click sul <strong>pulsante "Inizia"</strong> per iniziare la prova. </p>
       <br>
     `,
@@ -51,6 +52,7 @@ const IAT_TEXTS = {
       <p>Adesso è pregato di indicare se le immagini, che Le verranno mostrate successivamente, sono:</p>
       <p><strong>Spiacevoli</strong> = premere il tasto <strong>A</strong></p>
       <p><strong>Piacevoli</strong> = premere il tasto <strong>L</strong></p>
+      <p>Se preme il tasto sbagliato, apparirà una <strong>X rossa</strong>. Prema il tasto corretto per proseguire.</p>
       <p>Prema il tasto <strong>"Enter"</strong> o faccia un click sul <strong>pulsante "Inizia"</strong> per continuare la prova. </p>
       <br>
     `,
@@ -62,6 +64,7 @@ const IAT_TEXTS = {
       <p>il tasto <strong>L</strong> se l’immagine appartiene a una delle categorie mostrate a destra (<strong>Neutre</strong> o <strong>Piacevole</strong>)</p>
       <br>
       <p>Risponda il più velocemente possibile, senza pensarci troppo, cercando allo stesso tempo di evitare errori.</p>
+      <p>Se preme il tasto sbagliato, apparirà una <strong>X rossa</strong>. Prema il tasto corretto per proseguire.</p>
       <p>Prema il tasto <strong>"Enter"</strong> o faccia un click sul <strong>pulsante "Inizia"</strong> per continuare la prova. </p>
       <br>
     `,
@@ -72,6 +75,7 @@ const IAT_TEXTS = {
       <p>Il Suo compito è classificare ogni immagine il più rapidamente e accuratamente possibile, premendo:</p>
       <p>il tasto <strong>A</strong> per le immagini <strong>Neutre</strong></p>
       <p>il tasto <strong>L</strong> per le immagini del <strong>Conflitto</strong></p>
+      <p>Se preme il tasto sbagliato, apparirà una <strong>X rossa</strong>. Prema il tasto corretto per proseguire.</p>
       <p>Prema il tasto <strong>"Enter"</strong> o faccia un click sul <strong>pulsante "Inizia"</strong> per continuare la prova. </p>
       <br>
     `,
@@ -84,6 +88,7 @@ const IAT_TEXTS = {
       <p>il tasto <strong>L</strong> se l’immagine appartiene a una delle categorie mostrate a destra (<strong>Conflitto</strong> o <strong>Piacevole</strong>)</p>
       <br>
       <p>Risponda il più velocemente possibile, senza pensarci troppo, cercando allo stesso tempo di evitare errori.</p>
+      <p>Se preme il tasto sbagliato, apparirà una <strong>X rossa</strong>. Prema il tasto corretto per proseguire.</p>
       <p>Prema il tasto <strong>"Enter"</strong> o faccia un click sul <strong>pulsante "Inizia"</strong> per continuare la prova. </p>
       <br>
     `
