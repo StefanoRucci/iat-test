@@ -647,8 +647,8 @@ function showNextTrial() {
   const left = parts[0] || "";
   const right = parts[1] || "";
 
-  if (leftEl) leftEl.textContent = left;
-  if (rightEl) rightEl.textContent = right;
+  if (leftEl) leftEl.innerHTML = left;
+  if (rightEl) rightEl.innerHTML = right;
 
   const isLongBlock = (trial.block === 3 || trial.block === 5);
   [leftEl, rightEl].forEach((el) => {
@@ -671,10 +671,10 @@ function showNextTrial() {
     IAT_STATE.trialStartTime = performance.now();
     imgElement.style.visibility = "visible";
 
-    IAT_STATE.hideTimeoutId = setTimeout(() => {
-      imgElement.style.visibility = "hidden"; // nasconde ma non comprime layout
-      IAT_STATE.hideTimeoutId = null;
-    }, IAT_CONFIG.stimDurationMs);
+    // IAT_STATE.hideTimeoutId = setTimeout(() => {
+    //   imgElement.style.visibility = "hidden"; // nasconde ma non comprime layout
+    //   IAT_STATE.hideTimeoutId = null;
+    // }, IAT_CONFIG.stimDurationMs);
   };
 
   // Path cartella corretto

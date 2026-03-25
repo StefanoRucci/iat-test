@@ -10,7 +10,7 @@ const IAT_TEXTS = {
     <br></br>
     <p>Prima di iniziare, si assicuri di avere <strong>abbastanza tempo</strong> a disposizione e una <strong>connessione stabile</strong>.</p>
     <br></br>
-    <p>La partecipazione è anonima e i dati saranno utilizzati esclusivamnete a fini di ricerca scientifica. </p>
+    <p>La partecipazione è anonima e i dati saranno utilizzati esclusivamente a fini di ricerca scientifica. </p>
     <br></br>
     <p>È pregato di inserire il codice richiesto nella schermata successiva, il quale garantisce di mantenere l'anonimato ma di tracciare le sue risposte tra il questionario e il presente test. </p> 
     <br></br>
@@ -22,20 +22,20 @@ const IAT_TEXTS = {
     <p class="code-instruction">
       Inserisca:
       <br>
-      • le prime <strong>2 lettere</strong> del nome della madre
+      • le prime <strong>2 lettere</strong> del nome della propria madre
       <br>
-      • le prime <strong>2 lettere</strong> del nome del padre
+      • le prime <strong>2 lettere</strong> del nome del proprio padre
       <br>
-      • il <strong>giorno di nascita</strong> (2 cifre, es. 07)
+      • il proprio <strong>giorno di nascita</strong> (2 cifre, es. 07)
     </p>
   `,
 
   blockLabels: {
     1: "Conflitto = A    Neutre = L",
     2: "Spiacevoli = A    Piacevoli = L",
-    3: "Conflitto o Spiacevole = A    Neutre o Piacevole = L",
+    3: "Conflitto<br>o<br>Spiacevole<br>= A    Neutre<br>o<br>Piacevole<br>= L",
     4: "Neutre = A    Conflitto = L",
-    5: "Neutre o Spiacevole = A    Conflitto o Piacevole = L"
+    5: "Neutre<br>o<br>Spiacevole<br>= A    Conflitto<br>o<br>Piacevole<br>= L"
   },
 
   instructionsHtml: {
