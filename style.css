@@ -279,6 +279,18 @@ button:disabled {
   text-align: center !important;
 }
 
+/* ===== Email link schermata finale ===== */
+
+.email-link {
+  color: #2563eb;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.email-link:hover {
+  text-decoration: underline;
+}
+
 /* ===== Error feedback ===== */
 
 #error-feedback {

@@ -52,7 +52,10 @@ const IAT_CONFIG = {
   blockLabels: IAT_TEXTS.blockLabels,
 
   // Testi delle istruzioni per ciascun blocco (HTML)
-  instructionsHtml: IAT_TEXTS.instructionsHtml
+  instructionsHtml: IAT_TEXTS.instructionsHtml,
+
+  // Testo schermata finale
+  endScreenHtml: IAT_TEXTS.endScreenHtml
 };
 
 // ==========================

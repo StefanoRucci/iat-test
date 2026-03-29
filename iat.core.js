@@ -1000,7 +1000,10 @@ async function sendResultsToSheets() {
 
     // OK -> mostra end-screen
     hideAllScreens();
-    document.getElementById("end-screen")?.classList.remove("hidden");
+    const endScreen = document.getElementById("end-screen");
+    const endText = document.getElementById("end-text");
+    if (endText && IAT_CONFIG.endScreenHtml) endText.innerHTML = IAT_CONFIG.endScreenHtml;
+    if (endScreen) endScreen.classList.remove("hidden");
 
   } catch (err) {
     if (savingText) savingText.textContent = "Errore di rete nel salvataggio.";

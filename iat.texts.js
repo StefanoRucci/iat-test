@@ -38,11 +38,21 @@ const IAT_TEXTS = {
     5: "Neutre<br>o<br>Spiacevole<br>= A    Conflitto<br>o<br>Piacevole<br>= L"
   },
 
+  endScreenHtml: `
+    <p>Grazie per aver partecipato! Adesso che ha terminato, le vorremmo spiegare meglio gli obiettivi dello studio.</p>
+    <br>
+    <p>Con questo studio abbiamo voluto capire meglio i meccanismi di sensibilizzazione a contenuti online sui conflitti, e in particolare quello israelo-palestinese, rapportandolo alla propria esperienza online e a differenze individuali.</p>
+    <br>
+    <p>Il test che ha appena concluso si chiama <strong>IAT (Implicit Association Test)</strong> per immagini, e serve per indagare la forza delle associazioni implicite tra concetti.</p>
+    <br>
+    <p>Per ulteriori informazioni può scrivere all'indirizzo: <a class="email-link" href="mailto:carlotta.dadamo@students.uniroma2.eu">carlotta.dadamo@students.uniroma2.eu</a></p>
+  `,
+
   instructionsHtml: {
     1: `
       <p>In questo test verranno presentate delle immagini di diversa natura.</p>
       <p>Il Suo scopo è quello di categorizzarle come:</p>
-      <p><strong>Immagini relative al conflitto israeliano-palestinese</strong> = premere il tasto <strong>A</strong></p>
+      <p><strong>Immagini relative al conflitto</strong> = premere il tasto <strong>A</strong></p>
       <p><strong>Immagini neutre</strong> = premere il tasto <strong>L</strong></p>
       <p>Se preme il tasto sbagliato, apparirà una <strong>X rossa</strong>. Prema il tasto corretto per proseguire.</p>
       <p>Prema il tasto <strong>"Enter"</strong> o faccia un click sul <strong>pulsante "Inizia"</strong> per iniziare la prova. </p>
